@@ -1,0 +1,116 @@
+/* top element which draws user interface */
+#interface_box{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #696969;
+    color: #ffffff;
+}
+/* pallete where features are drawn */
+#palette{
+    border-bottom: 2px solid #999;
+    position: absolute;
+    left: 0;
+    right: 0;
+    heigth: 220px;
+    background: url('pattern.gif') repeat;
+    white-space: nowrap; 
+    overflow: auto;
+}
+#palette ol{
+    padding: 50px;
+    text-align: center;
+}
+
+#palette ol li{
+    display: inline-block;
+    margin: 0 25px 0 25px;
+}
+
+/* feature box are wraping features in a palette */
+.featureBox{
+    height: 120px;
+    width: 100px;
+    display: inline-block;
+    position: relative;
+}
+
+.featureBox .caption{
+    position: absolute;
+    bottom:0;
+    left: 0;
+    right: 0;
+    font-size: small;
+}
+
+/* workspace is place where all scheme created */
+#workspace{
+    background: url('img/grad.png') repeat-x;
+    position: absolute;
+    top: 220px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+/* for vertical centring */
+#vertical-centering-inner{
+
+    display: table;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+#vertical-centering-outer{
+    /* for vertical centring */
+    display : table-cell;
+    vertical-align: middle;
+    /* end vertical centring */
+    padding: 50px;
+}
+
+#diagram{
+    position:relative;
+}
+
+/* Menu style */
+#menu{
+    position: absolute;
+    z-index:10;
+    left: 20%;
+    top: 20%;
+    height: 60%;
+    width: 60%;
+    background-color: #fff;
+    color: #656565;
+    padding: 30px;
+    display: none;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+
+#menu .option{
+    margin-bottom: 5px;
+}
+
+#menu .option input{
+    margin-left: 10px;
+}
+
+#menu .close{
+    position: absolute;
+    top:30;
+    right:30;
+}
+
+#menu .remove{
+    position: absolute;
+    bottom: 30;
+    right: 30;
+    color: red;
+}

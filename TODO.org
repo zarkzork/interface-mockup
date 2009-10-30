@@ -1,0 +1,2 @@
+* add transitions type
+  Use png picture for this.
