@@ -284,7 +284,7 @@ Feature.prototype={
   clone: function(){
     var properties={};
     for(var i in this.properties){
-      properties[i]=this.properties;
+      properties[i]=this.properties[i];
     }
     return new Feature(this.transitions, properties, this.options);
   },
