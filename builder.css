@@ -15,12 +15,12 @@
     left: 0;
     right: 0;
     heigth: 220px;
-    background: url('pattern.gif') repeat;
+    background: url('img/pattern.gif') repeat;
     white-space: nowrap; 
     overflow: auto;
 }
 #palette ol{
-    padding: 50px;
+    padding: 30px;
     text-align: center;
 }
 
@@ -49,7 +49,7 @@
 #workspace{
     background: url('img/grad.png') repeat-x;
     position: absolute;
-    top: 220px;
+    top: 180px;
     left: 0;
     right: 0;
     bottom: 0;
