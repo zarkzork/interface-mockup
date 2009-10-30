@@ -12,8 +12,6 @@ var preloaded_images=new PreloadedImages(["anno",
 					  "start",
 					  "usa"]);
 
-
-
 function PreloadedImages(images){
   var self=this;
   var count=images.length;
@@ -221,12 +219,11 @@ Menu.prototype={
     var self=this;
     var menu=$("#menu");
     menu.empty();
-    menu.show();
     var close_link=$("<a/>")
       .addClass("close")
       .attr("href","#")
       .text("Close")
-      .click(function(){menu.hide();});
+      .click(function(){menu.slideUp("fast");});
     menu.append(close_link);
     var remove_link=$("<a/>")
       .addClass("remove")
@@ -235,13 +232,15 @@ Menu.prototype={
       .click(function(){
 	       if(confirm("Do you really want to remove node?")){
 		 self.workspace.remove(self.node);
-		 menu.hide();
+		 menu.slideUp("fast");
 	       }
 	     });
     menu.append(remove_link);
     for(var prop in this.properties){
       this.addProperty(prop);
     }
+    menu.slideDown("fast");
+
   },
   addProperty: function(property){
     var self=this;
@@ -317,7 +316,8 @@ Feature.prototype={
 		       revert: 'invalid',
 		       helper: function(event) {
 			 return self.getCanvas();
-		       }
+		       },
+		       start: hideHelpers
 		     });
     var box=$("<div/>")
       .addClass("featureBox")
@@ -329,6 +329,10 @@ Feature.prototype={
     return $("<div>").append(box);
   }
 };
+
+function hideHelpers(){
+    $(".helper").fadeOut("slow");
+}
 
 /* Simple function to return jQuery object with canwas in it. */
 function Canvas(id, height, width){
