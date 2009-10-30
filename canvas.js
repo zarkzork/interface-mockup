@@ -53,7 +53,7 @@ var SHORT_WIDTH=100;
 var LONG_WIDTH=200;
 
 function Node(feature){
-  this.feature=feature.clone();
+  this.feature=!feature?null:feature.clone();
   this.children=[];
   if(feature){
     for(var i=0;i<feature.transitions;i++){
