@@ -1,3 +1,5 @@
+
+
 $(onLoad);
 /* preload images that will be used in builder */
 var preloaded_images=new PreloadedImages(["anno",
@@ -157,6 +159,11 @@ Workspace.prototype={
     node.children[pos]=new Node(feature);
     this.draw();
   },
+  move: function(old_node, old_pos, new_node, new_pos){
+    new_node.children[new_pos]=old_node.children[old_pos];
+    old_node.children[old_pos]=new Node(null);
+    this.draw();
+  },
   /* Places transitions in the right place on #workspace */
   drawTransition: function(node, deep, height){
     var transitions=node.getCanvas();
@@ -208,10 +215,31 @@ Workspace.prototype={
     (function(i,node,droppable){
        droppable.droppable({
 			     drop:function(e, ui){
-			       self.append(node,
-					   i,
-					   ui.draggable.data("self"));
-			     }
+			       /* This uses setTimeout with 0
+				timeout. As workspace.draw() removes
+				droppable and future event processing
+				uses droppable we need to allow event
+				to be processed */
+			       setTimeout(
+				 function(){
+				   var feature=
+				     ui.draggable.data("feature");
+				   if(feature){
+				     self.append(node,
+						 i,
+						 feature);
+				   }else{
+				     var node_element=
+				       ui.draggable.data("node_element");
+				     self.move(node_element.node,
+					       node_element.pos,
+					       node,
+					       i);
+				   }
+				 }, 0);
+			     },
+			     /* as nested elements could be so big */
+			     tolerance:"pointer"
 			   });	     
      })(i,node,droppable);
     this.getNodeToAppend(deep+1, height).append(droppable);    
@@ -231,6 +259,12 @@ Workspace.prototype={
       var deep=arguments[1];
       /* current distance from top in feature heights. */
       var height=arguments[2];
+      /* make node draggable */
+      this.getNodeToAppend(deep,height)
+      	.draggable({
+		     revert: 'invalid',
+		     appendTo: 'body'
+		   });
       /* draw transitions */
       this.drawTransition(node,deep,height);
       /* draw feature icon */
@@ -239,12 +273,13 @@ Workspace.prototype={
       var child;
       /* calls it self recursively adding one to deep and height */
       for(var i in node.children){
+	/* this div allow node and it's children to be dragged */
+	var draggable=$("<div/>")
+	  .attr("id","d"+(deep+1)+"h"+(height+used_height))
+	  .data("node_element",{"node":node,
+				pos:i});
 	this.getNodeToAppend(deep, height)
-	  .append(
-	    $("<div/>")
-	      .attr("id","d"+(deep+1)+"h"+(height+used_height))
-	      .draggable()
-	  );
+	  .append(draggable);
 	child=node.children[i];
 	if(child.feature){
 	  used_height+=this.draw(child,deep+1,height+used_height);
@@ -377,7 +412,7 @@ Feature.prototype={
       ctx.fillStyle= "rgba(255, 255, 255, 0.5)";
       ctx.fillRect ( 0, top, FEATURE_HEIGTH-10, SHORT_WIDTH);      
     }
-    cnvs.data("self",this);
+    cnvs.data("feature",this);
     return cnvs;
   },
   /* feature box with caption on palette */
