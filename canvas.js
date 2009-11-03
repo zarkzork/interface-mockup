@@ -216,7 +216,7 @@ Workspace.prototype={
     this.draw();
   },
   move: function(old_node, old_pos, new_node, new_pos){
-    var text="node Moved";
+    var text="Node moved";
     this.messenger.show(text);
     this.saveState(text);
     new_node.children[new_pos]=old_node.children[old_pos];
