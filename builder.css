@@ -1,10 +1,10 @@
 /* top element which draws user interface */
 #interface_box{
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
     background-color: #696969;
     color: #ffffff;
 }
@@ -12,8 +12,8 @@
 #palette{
     border-bottom: 2px solid #999;
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0px;
+    right: 0px;
     heigth: 220px;
     background: url('img/pattern.gif') repeat;
     white-space: nowrap; 
@@ -26,7 +26,7 @@
 
 #palette ol li{
     display: inline-block;
-    margin: 0 25px 0 25px;
+    margin: 0px 25px 0px 25px;
 }
 
 /* feature box are wraping features in a palette */
@@ -39,9 +39,9 @@
 
 .featureBox .caption{
     position: absolute;
-    bottom:0;
-    left: 0;
-    right: 0;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
     font-size: small;
 }
 
@@ -50,9 +50,9 @@
     background: url('img/grad.png') repeat-x;
     position: absolute;
     top: 180px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     overflow: auto;
 }
 
@@ -79,7 +79,7 @@
 #vertical-centering-inner{
 
     display: table;
-    overflow: hidden;
+    /* overflow: hidden; */
     height: 100%;
     width: 100%;
 }
@@ -123,16 +123,17 @@
 
 #menu .close{
     position: absolute;
-    top:30;
-    right:30;
+    top:30px;
+    right:30px;
 }
 
 #menu .remove{
     position: absolute;
-    bottom: 30;
-    right: 30;
+    bottom: 30px;
+    right: 30px;
     color: red;
 }
+/* class for debugging boxes */
 .border{
     border: 1px solid white;
 }
@@ -140,12 +141,24 @@
 /* footer controls */
 #footer_controls{
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 0px;
+    left: 0px;
+    filter:alpha(opacity=20);
+    opacity:.90;
+    background-color: #696969;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
-
-/* draggable style */
-.ui-draggable{
-    z-index: 10;
+/* message box in the bottom */
+#messages{
+    display: none;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+    background-color: #696969;
+    left: 20%;
+    right: 20%;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }

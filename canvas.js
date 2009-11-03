@@ -27,7 +27,7 @@ function PreloadedImages(images){
   };
   var with_error=function(){
     loaded();
-    throw "error during load of image";
+    throw "error during load of image.";
   };
   for(var i in images){
     var image=images[i];
@@ -74,6 +74,14 @@ Node.prototype={
   clear: function(){
     this.feature=null;
     this.children=[];
+  },
+  /* copies current node */
+  clone: function(){
+    var node=new Node(this.feature);
+    for(var i in this.children){
+      node.children[i]=this.children[i].clone();
+    }
+    return node;
   },
   /* recursively determines height of node. @return integer
    representing number of objects that needs to be stored in node */
@@ -155,27 +163,62 @@ function Workspace(){
 			  },
 			  tolerance:"pointer"			  
 			});
-  this.root=new Node(new Feature(1,{},{img:preloaded_images.start}));
+  /* onclick for undo buttob */
+  $("#undo").click(function(){
+		     self.undo();
+		   });
+  this.messenger=new Messenger();
+  this._history=[];
+  this.root=new Node(new Feature(1,
+				 {},
+				 {
+				   img:preloaded_images.start,
+				   transitions_img:[preloaded_images.start]
+				 }));
   this.draw();
   return this;
 }
 
 Workspace.prototype={
+  /* undo last change */
+  undo: function(){
+    if(this._history.length>0){
+      var history_element=this._history.pop();
+      this.root=history_element.node;
+      if(history_element.message){
+	this.messenger.show("Undo: "+
+			    history_element.message);	
+      }
+    }
+    this.draw();
+  },
+  /* saves state of diagram to allow undo */
+  saveState: function(description){
+    this._history.push({node: this.root.clone(),
+			message: description});
+  },
   /* remove node from workspace */
   remove: function(node){
     if(node==this.root){
       throw "can't delete root node";
     }
+    var text="node deleted";
+    this.messenger.show(text);
+    this.saveState(text);
     node.clear();
     this.draw();
   },
   /* append node @node -- node to be appended. @pos -- position among
    node transitions and @feature -- feature to be added. */
   append: function(node,pos,feature){
+    this.saveState("node appended");
     node.children[pos]=new Node(feature);
     this.draw();
   },
   move: function(old_node, old_pos, new_node, new_pos){
+    var text="node Moved";
+    this.messenger.show(text);
+    this.saveState(text);
     new_node.children[new_pos]=old_node.children[old_pos];
     old_node.children[old_pos]=new Node(null);
     this.draw();
@@ -279,7 +322,8 @@ Workspace.prototype={
       this.getNodeToAppend(deep,height)
       	.draggable({
 		     revert: 'invalid',
-		     appendTo: 'body'
+		     appendTo: 'body',
+		     zIndex: 10
 		   });
       /* draw transitions */
       this.drawTransition(node,deep,height);
@@ -364,10 +408,16 @@ Menu.prototype={
       .text(property);
     var input_box=$("<input type=\"text\"/>")
       .attr( "value", this.properties[property]);
-    input_box.change(function(){
-		       self.properties[property]=
-			 $(this).attr("value");
-    		     });
+    input_box.change(
+      function(){
+	if(self.properties[property]!=$(this).attr("value")){
+	  var text="parameter \""+
+	    property+"\" changed.";
+	  self.workspace.messenger.show(text);
+	  self.workspace.saveState(text);
+	  self.properties[property]=$(this).attr("value");
+	}
+      });
     menu.append($("<div/>")
 		.addClass("option")
 		.append(label)
@@ -548,5 +598,41 @@ Palette.prototype={
   }
 };
 
+/* controls messages queue */
+function Messenger(){
+  this.stack=[];
+  this._showing=false;
+  return this;
+}
 
+Messenger.prototype={
+  show: function(text){
+    if(text&&text!=""){
+      this.stack.push(text);
+      this._display();      
+    }
+  },
+  _display: function(){
+    if(!this._showing){
+      var self=this;
+      var text=this.stack.pop();
+      if(text){
+	this._showing=true;
+	$("#messages h1").text(text);
+	$("#messages").slideDown('slow',
+				 function(){
+				   setTimeout(
+				     function(){
+				       $("#messages")
+					 .slideUp('fast',
+						  function(){
+						    self._showing=false;
+						    self._display();
+						  });
+				     }, 2000);
+				 });
+      }
+    }
+  }
+};
 
