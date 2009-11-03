@@ -87,8 +87,8 @@ Node.prototype={
     return height;
   },
   /* returns canvas with transitions. Also adds small icon
-  representing each transition. If icon is absent draws a circle with
-  random color */
+   representing each transition. If icon is absent draws a circle with
+   random color */
   getCanvas: function(){
     var cnvs=Canvas("", this.getHeight()*FEATURE_HEIGTH, LONG_WIDTH);
     var ctx=cnvs[0].getContext("2d");
@@ -152,7 +152,7 @@ Workspace.prototype={
     this.draw();
   },
   /* append node @node -- node to be appended. @pos -- position among
-  node transitions and @feature -- feature to be added. */
+   node transitions and @feature -- feature to be added. */
   append: function(node,pos,feature){
     node.children[pos]=new Node(feature);
     this.draw();
@@ -165,33 +165,34 @@ Workspace.prototype={
       .css("position","absolute")
       .css("top", height*FEATURE_HEIGTH)
       .css("left", left_pos);
-    $("#diagram").append(transitions);
+    this.getNodeToAppend(deep, height).append(transitions);
   },
   /* Places Feature in the rigth place of the #workspace */
   drawFeature: function(node, deep, height){
+    var self=this;
     var left_pos=deep*LONG_WIDTH-deep*SHORT_WIDTH/2;
     var feature;
     if(node==this.root){
-      feature=node.feature.getCanvas();	
+      feature=node.feature.getCanvas();
     }else{
       feature=node.feature.getCanvas();
-      feature.click(function(){
-		      var menu=new Menu(node, self);
+      feature.dblclick(function(){
+			 var menu=new Menu(node, self);
 		      menu.showMenu();
 		    });
     }
     var feature_top=(node.getHeight()/2+height)*FEATURE_HEIGTH
-       	-FEATURE_HEIGTH/2;
+      -FEATURE_HEIGTH/2;
     feature
       .css("position","absolute")
       .css("top", feature_top)
       .css("left", left_pos);
-    $("#diagram").append(feature);      
+    this.getNodeToAppend(deep, height).append(feature);      
   },
   /* Draws a box which is used as container that gets droppable
-  objects (see jquery droppable and draggable). @i -- position in the
-  node to which dropped feature will be appended. for other params see
-  this.draw() */
+   objects (see jquery droppable and draggable). @i -- position in the
+   node to which dropped feature will be appended. for other params see
+   this.draw() */
   drawBox: function(i, node, deep, height){
     var self=this;
     var left_pos=deep*LONG_WIDTH-deep*SHORT_WIDTH/2;
@@ -213,10 +214,10 @@ Workspace.prototype={
 			     }
 			   });	     
      })(i,node,droppable);
-    $("#diagram").append(droppable);    
+    this.getNodeToAppend(deep+1, height).append(droppable);    
   },
   /* Draws whole tree on the workspace. Should be used without
-  args. function recursively calls itself to draw each node */
+   args. function recursively calls itself to draw each node */
   draw: function(){
     /* if there is no arguments call self with root node */
     if(arguments.length==0){
@@ -238,6 +239,12 @@ Workspace.prototype={
       var child;
       /* calls it self recursively adding one to deep and height */
       for(var i in node.children){
+	this.getNodeToAppend(deep, height)
+	  .append(
+	    $("<div/>")
+	      .attr("id","d"+(deep+1)+"h"+(height+used_height))
+	      .draggable()
+	  );
 	child=node.children[i];
 	if(child.feature){
 	  used_height+=this.draw(child,deep+1,height+used_height);
@@ -251,6 +258,13 @@ Workspace.prototype={
 	return 1;
       }
       return used_height;
+    }
+  },
+  getNodeToAppend: function(deep, height){
+    if(deep==0){
+      return $("#diagram");
+    }else{
+      return $("#d"+deep+"h"+height);
     }
   }
 };
@@ -391,7 +405,7 @@ Feature.prototype={
 
 /* hides all initial screen helpers */
 function hideHelpers(){
-    $(".helper").fadeOut("slow");
+  $(".helper").fadeOut("slow");
 }
 
 /* Simple function to return jQuery object with canwas in it. */
@@ -416,9 +430,10 @@ function Palette(){
 			    img:preloaded_images.lang,
 			    transitions_img:[preloaded_images.rus,
 					     preloaded_images.usa,
-					     preloaded_images.jap]
-			  }),
-	     "Select language");
+					     preloaded_images.jap],
+			    name:"Select language"
+			  })
+	     );
   
   this.append(new Feature(1,
 			  {
@@ -426,18 +441,20 @@ function Palette(){
 			  },
 			  {
 			    img:preloaded_images.anno,
-			    transitions_img:[preloaded_images.ok]
-			  }),
-	      "Play announcement");
+			    transitions_img:[preloaded_images.ok],
+			    name:"Play announcement"
+			  })
+	     );
   
   this.append(new Feature(0,
 			  {
 			    "Beep before drop (seconds)":15
 			  },
 			  {
-			    img:preloaded_images.drop
-			  }),
-	      "Drop call");
+			    img:preloaded_images.drop,
+			    name:"Drop call"
+			  })
+	     );
   
   this.append(new Feature(2,
 			  {
@@ -446,16 +463,18 @@ function Palette(){
 			  {
 			    img:preloaded_images.pin,
 			    transitions_img:[preloaded_images.ok,
-					     preloaded_images.error]
-			  }),
-	      "Check pin");
+					     preloaded_images.error],
+			    name:"Check pin"
+			  })
+	     );
   
   this.append(new Feature(0,
 			  {},
 			  {
-			    img:preloaded_images.ok
-			  }),
-	      "Connect");
+			    img:preloaded_images.ok,
+			    name:"Connect"
+			  })
+	     );
   
   this.append(new Feature(2,
 			  {
@@ -464,9 +483,10 @@ function Palette(){
 			  {
 			    img:preloaded_images.black,
 			    transitions_img:[preloaded_images.ok,
-					     preloaded_images.error]
-			  }),
-	      "Black list");
+					     preloaded_images.error],
+			    name:"Black list"
+			  })
+	      );
   return this;
 }
 
