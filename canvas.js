@@ -1,5 +1,4 @@
-
-
+/* jquery on page load event handler */
 $(onLoad);
 /* preload images that will be used in builder */
 var preloaded_images=new PreloadedImages(["anno",
@@ -139,6 +138,23 @@ Node.prototype={
 /* place where scheme is stored. Object controls position of nodes and*/
 /* draws them to #workspace */
 function Workspace(){
+  var self=this;
+  /* Trash icon is used to delete elements from scheme */
+  $("#trash").droppable({
+			  accept:function(draggable){
+			    return draggable.data("node_element");
+			  },
+			  drop: function(e, ui){
+			    setTimeout(
+			      function(){
+				/* node_element */
+				var n_e=
+				  ui.draggable.data("node_element");
+				self.remove(n_e.node.children[n_e.pos]);
+			      }, 0);
+			  },
+			  tolerance:"pointer"			  
+			});
   this.root=new Node(new Feature(1,{},{img:preloaded_images.start}));
   this.draw();
   return this;
@@ -531,4 +547,6 @@ Palette.prototype={
 			    .append(feature.featureBox(text)));
   }
 };
+
+
 
