@@ -15,7 +15,7 @@
     left: 0px;
     right: 0px;
     heigth: 220px;
-    background: url('img/pattern.gif') repeat;
+    background: url('../img/pattern.gif') repeat;
     white-space: nowrap; 
     overflow: auto;
 }
@@ -47,7 +47,7 @@
 
 /* workspace is place where all scheme created */
 #workspace{
-    background: url('img/grad.png') repeat-x;
+    background: url('../img/grad.png') repeat-x;
     position: absolute;
     top: 180px;
     left: 0px;
