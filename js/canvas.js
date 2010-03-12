@@ -15,6 +15,7 @@ var preloaded_images=new PreloadedImages(["anno",
 
 /* @return object containing preloaded images objects. When all images */
 /* will be loaded. this.images loaded will be true.*/
+/* TODO: add callback on images load. */
 function PreloadedImages(images){
   var self=this;
   var count=images.length;
